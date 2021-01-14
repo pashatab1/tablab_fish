@@ -5,6 +5,10 @@ Created on Wed Jan  6 13:41:44 2021
 
 @author: tabatabai
 """
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 def snake_coordinates(x,y):
     """
@@ -36,7 +40,7 @@ def all_snake_coordinates(df):
                         each snake in every frame
     
     APT
-    """"
+    """
     
     snake_stats = []
     num_snakes = int(df.snake_no.max())
@@ -76,10 +80,10 @@ def plot_snake_coordinates(stats_df, save_path_str):
     plt.xlim([0, 3000])
     plt.ylim([0, 3000])
     plt.xlabel('X position (px)')
-    plt.xlabel('Y position (px)')
-    plt.legend(loc = 'lower left')
-    plt.title('1 Fish, 101 Frames')
+    plt.ylabel('Y position (px)')
+    #plt.legend(loc = 'lower left')
+    plt.title('Title Here')
     
     plt.gca().invert_yaxis()
-    plt.savefig(save_path)
+    plt.savefig(save_path_str)
     plt.show()
