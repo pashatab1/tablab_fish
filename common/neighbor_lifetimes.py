@@ -94,8 +94,8 @@ def find_neighbors(X,Y,N_Frames):
         y = []
         #if j not in P[2]: #skips frames where errors occur
         for ii in range(N_Fish):
-            x.append(X[jj][ii]) #order reversed from test data
-            y.append(-Y[jj][ii])    
+            x.append(X[ii][jj]) #order reversed from test data
+            y.append(-Y[ii][jj])    
 
         points = []
         for k in range(N_Fish):
@@ -105,15 +105,14 @@ def find_neighbors(X,Y,N_Frames):
         print('here')
         
         for reg in vor.regions:
-            if -1 not in reg and reg != []:
-                # only looks at vertices of closed regions contained within hull
-                these_vertices = []
+            if -1 not in reg and reg != []: # only looks at vertices of closed regions 
+            
+                these_vertices = []     
                 for v in reg:
                     these_vertices.append(vor.vertices[v])
                 in_out = in_hull(these_vertices,school_hull)
-                if in_out:
-                    print('here')
-                    
+                
+                if in_out: # only look at those regions contained entirely within hull
                     neighbors = []
                     for k in range(0,len(vor.ridge_vertices)):
                         # go through ridge vertices to find matches to vertices in closed region
@@ -122,8 +121,7 @@ def find_neighbors(X,Y,N_Frames):
                             # use index of ridge vertices to find neighboring points
                             neighbors.append(vor.ridge_points[k])
                             #print(neighbors)
-                    flat_neighbors = [item for sublist in neighbors for item in sublist]
-                    #print(flat_neighbors)  
+                    flat_neighbors = [item for sublist in neighbors for item in sublist] 
                     
                     # remove duplicates from point list
                     uniq = []
@@ -153,10 +151,7 @@ X = P[0]
 Y = P[1]
 
 
-
-
-
-def lifetimes(df,N_Fish,missing):
+def lifetimes(df,N_Fish,missing,loss_factor):
     '''Reads in dataframe from find_neighbors
     Determines lifetimes of each set of neighbors
     Outputs life
@@ -166,7 +161,6 @@ def lifetimes(df,N_Fish,missing):
     neighbors_changed = 0
     for jj in range(N_Fish):
         df2 = df.loc[df['Fish'] == jj]
-        #print(df2.head())
         count = 1
 
         for kk in range(df2.shape[0]-1):    
@@ -186,10 +180,10 @@ def lifetimes(df,N_Fish,missing):
                 # elif n1 != n2: # rigid constraint, option 1
                 #     stayed_same = False
                 #     neighbors_changed += 1
-                elif 0.75 * len(n1) >= len(n1.intersection(n2)): # less rigid constraint, option 2
+                elif loss_factor * len(n1) >= len(n1.intersection(n2)): # factor gives option for less rigid constraint, option 2
                     stayed_same = False
                     neighbors_changed += 1
-                if stayed_closed and stayed_same:
+                if stayed_same: #stayed_closed and stayed_same:
                     count += 1
                 else:
                     life.append(count)
@@ -217,16 +211,14 @@ def in_hull(pts,hull):
 # X = [1,1,1,2,2,2,3,3,3]
 # Y = [1,2,3,1,2,3,1,2,3]
 # test area
-X = [[1,1,1,2,2,2,3,3,3],[1,1,1,2,2,2,3,3,3]]
-Y = [[1,2,3,1,2,3,1,2,3],[1,2,3,1,2,3,1,2,3]]
-
-
-N_Frames = 2
-N_Fish = 9
+# X = [[1,1,1,2,2,2,3,3,3],[1,1,1,2,2,2,3,3,3]]
+# Y = [[1,2,3,1,2,3,1,2,3],[1,2,3,1,2,3,1,2,3]]
+# N_Frames = 2
+# N_Fish = 9
 
 df = find_neighbors(X,Y,N_Frames)
 print(df)   
-[life,voronoi_opened_up, neighbors_changed] = lifetimes(df,N_Fish,P[2])
+[life,voronoi_opened_up, neighbors_changed] = lifetimes(df,N_Fish,P[2],1)
 
 plt.figure()
 plt.hist(life,bins = 30)
