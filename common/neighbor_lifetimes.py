@@ -109,7 +109,7 @@ def find_neighbors(X,Y,N_Frames):
                 # only looks at vertices of closed regions contained within hull
                 these_vertices = []
                 for v in reg:
-                    these_vertices.append(v)
+                    these_vertices.append(vor.vertices[v])
                 in_out = in_hull(these_vertices,school_hull)
                 if in_out:
                     print('here')
