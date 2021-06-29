@@ -66,7 +66,7 @@ def main(filepath,unit,unit_str):
     plt.show()
     
     # Convert from frequency to px/inch
-    indx = np.nanargmax(yystar[0:int(np.floor(len(df.Gray_Value)/2))]) # Max of power spectrum occurs at this index
+    indx = np.nanargmax(yystar[2:int(np.floor(len(df.Gray_Value)/2))]) # Max of power spectrum occurs at this index
     frequency = xf[indx]
     repeating_distance = 1/frequency
     
